@@ -8,12 +8,13 @@ function Ship:new(cx, cy, radius)
     self.y = cy 
     self.r = radius
     self.a = {-90, 45, 135}
-    self.p = makePoints(self.x, self.y, self.r, self.a)
+    self.p = make_points(self.x, self.y, self.r, self.a)
     self.head_radius = 16
+    self.vel = 10
     return o
 end 
 
-function makePoints(cx, cy, radius, angles)
+function make_points(cx, cy, radius, angles)
     local gap = 30
     local p = {{cx + math.cos(math.rad(angles[1])) * radius, cy + math.sin(math.rad(angles[1])) * radius}, 
                 {cx + math.cos(math.rad(angles[2])) * radius, cy + math.sin(math.rad(angles[2])) * radius}, 
@@ -33,6 +34,7 @@ end
 function Ship:update(dt)
     local up = 100
     local change = false 
+    -- player rotation
     if love.keyboard.isDown('a', 'left') then 
         self.a[1] = self.a[1] - up * dt
         self.a[2] = self.a[2] - up * dt
@@ -47,6 +49,17 @@ function Ship:update(dt)
     if change then 
         self.p = makePoints(self.x, self.y, self.r, self.a)
     end 
+    -- player movement (forward)
+    if love.keyboard.isDown('w', 'up') then 
+        local a = self.a[1]
+        dx = math.cos(math.rad(a)) * self.r * self.vel * dt
+        dy = math.sin(math.rad(a)) * self.r * self.vel * dt
+        self.x = self.x + dx 
+        self.y = self.y + dy 
+        self.p = makePoints(self.x, self.y, self.r, self.a)
+    end 
+    -- check boundaries
+    
 end 
 
 return Ship 
