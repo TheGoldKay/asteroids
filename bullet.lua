@@ -1,8 +1,9 @@
 local Bullet = {}
+local Bullets = {}
 
 function Bullet:new(x, y, r, a, speed)
     local o = {}
-    setmetable(o, self)
+    setmetatable(o, self)
     self.__index = self 
     -- set the coordinate of the bullet's center (circle)
     self.x = x 
@@ -31,3 +32,42 @@ function Bullet:update(dt)
         self.alive = false  
     end 
 end 
+
+function Bullets:new(velocity, radius)
+    local o = {}
+    setmetatable(o, self)
+    self.__index = self 
+    self.vel = velocity
+    self.r = radius
+    -- all of bullets stored after being fired
+    self.list = {} 
+    self.clock = 0 
+    self.timer = 0.08
+    return o 
+end 
+
+function Bullets:add(x, y, a)
+    if self.clock > self.timer then 
+        local bullet = Bullet:new(x, y, self.r, a, self.vel)
+        table.insert(self.list, bullet)
+        self.clock = 0
+    end 
+end 
+
+function Bullets:update(dt)
+    self.clock = self.clock + dt
+    for k, v in ipairs(self.list) do 
+        self.list[k]:update(dt)
+        if not self.list[k].alive then 
+            table.remove(self.list, k)
+        end 
+    end 
+end 
+
+function Bullets:draw()
+    for k, v in ipairs(self.list) do 
+        self.list[k]:draw()
+    end 
+end 
+
+return Bullets
