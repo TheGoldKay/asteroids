@@ -47,7 +47,7 @@ function Ship:update(dt)
         change = true 
     end 
     if change then 
-        self.p = makePoints(self.x, self.y, self.r, self.a)
+        self.p = make_points(self.x, self.y, self.r, self.a)
     end 
     -- player movement (forward)
     if love.keyboard.isDown('w', 'up') then 
@@ -56,10 +56,27 @@ function Ship:update(dt)
         dy = math.sin(math.rad(a)) * self.r * self.vel * dt
         self.x = self.x + dx 
         self.y = self.y + dy 
-        self.p = makePoints(self.x, self.y, self.r, self.a)
+        self.p = make_points(self.x, self.y, self.r, self.a)
     end 
     -- check boundaries
-    
+    local check = false 
+    if self.x < 0 then 
+        self.x = love.graphics.getWidth()
+        check = true 
+    elseif self.x > love.graphics.getWidth() then 
+        self.x = 0 
+        check = true 
+    end 
+    if self.y < 0 then 
+        self.y = love.graphics.getHeight()
+        check = true 
+    elseif self.y > love.graphics.getHeight() then 
+        self.y = 0 
+        check = true 
+    end 
+    if check then 
+        self.p = make_points(self.x, self.y, self.r, self.a)
+    end 
 end 
 
 return Ship 
