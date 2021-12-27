@@ -11,6 +11,8 @@ function Ship:new(cx, cy, radius)
     self.p = make_points(self.x, self.y, self.r, self.a)
     self.head_radius = 16
     self.vel = 10
+    self.up = 80
+    self.dir = 'immobile'
     return o
 end 
 
@@ -31,24 +33,29 @@ function Ship:draw()
     love.graphics.circle('fill', self.p[1], self.p[2], self.head_radius/2)
 end 
 
-function Ship:update(dt)
-    local up = 100
-    local change = false 
+function Ship:rotate(dt)
     -- player rotation
-    if love.keyboard.isDown('a', 'left') then 
-        self.a[1] = self.a[1] - up * dt
-        self.a[2] = self.a[2] - up * dt
-        self.a[3] = self.a[3] - up * dt
-        change = true 
-    elseif love.keyboard.isDown('d', 'right') then 
-        self.a[1] = self.a[1] + up * dt
-        self.a[2] = self.a[2] + up * dt
-        self.a[3] = self.a[3] + up * dt
-        change = true 
+    if self.dir == 'l' then 
+        self.a[1] = self.a[1] - self.up * dt
+        self.a[2] = self.a[2] - self.up * dt
+        self.a[3] = self.a[3] - self.up * dt 
+    elseif self.dir == 'r' then 
+        self.a[1] = self.a[1] + self.up * dt
+        self.a[2] = self.a[2] + self.up * dt
+        self.a[3] = self.a[3] + self.up * dt 
     end 
-    if change then 
+    if self.dir == 'l' or self.dir == 'r' then 
         self.p = make_points(self.x, self.y, self.r, self.a)
     end 
+end 
+
+function Ship:update(dt)
+    if love.keyboard.isDown('a', 'left') then 
+        self.dir = 'l'
+    elseif love.keyboard.isDown('d', 'right') then 
+        self.dir = 'r'
+    end 
+    self:rotate(dt)
     -- player movement (forward)
     if love.keyboard.isDown('w', 'up') then 
         local a = self.a[1]

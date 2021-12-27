@@ -1,4 +1,5 @@
 $ Make the ship move in circles (move around its on center)
 $ Allow the ship to move forward regardless of rotation (angle)
 $ Fix boundary problem (player going out of screen)
+$ Set up auto mode (ship will rotate on its own)
 $ Create firing mechanism (bullet objects)
