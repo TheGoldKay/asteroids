@@ -4,3 +4,4 @@ $ Fix boundary problem (player going out of screen)
 $ Set up auto mode (ship will rotate on its own)
 $ Create firing mechanism (bullet objects)
 $ Build up a list of bullets from bullet class as the ship fires
+$ Make asteroids

@@ -1,5 +1,6 @@
 Ship = require 'ship'
 Bullets = require 'bullet'
+Asteroids = require 'asteroids'
 
 function love.load()
     screen_width = love.graphics.getWidth()
@@ -7,11 +8,13 @@ function love.load()
     love.window.setMode(screen_width, screen_height, {x = 600, y = 300})
     ship = Ship:new(screen_width/2, screen_height/2, 50)
     bullets = Bullets:new(100, 10)
+    astros = Asteroids:new()
 end 
 
 function love.draw()
     ship:draw()
     bullets:draw()
+    astros:draw()
 end 
 
 function love.keypressed(key)
@@ -27,4 +30,5 @@ function love.update(dt)
     end 
     ship:update(dt)
     bullets:update(dt)
-end 
+    astros:create(dt)
+end
