@@ -31,4 +31,5 @@ function love.update(dt)
     ship:update(dt)
     bullets:update(dt)
     astros:create(dt)
+    bullets.list = astros:hit_check(bullets.list)
 end
