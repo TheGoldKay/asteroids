@@ -10,6 +10,7 @@ function Asteroids:new()
     self.r_max = 100
     self.x_min = 10
     self.y_min = 10
+    self.vel = 1
     -- wait 'timer' seconds to create new asteroids
     self.clock = 0
     self.timer = 1
@@ -22,7 +23,8 @@ function Asteroids:create(dt)
         local x = math.random(self.x_min, love.graphics.getWidth())
         local y = math.random(self.y_min, love.graphics.getHeight())
         local r = math.random(self.r_min, self.r_max)
-        table.insert(self.astros, {x = x, y = y, r = r})
+        local a = math.random(0, 360)
+        table.insert(self.astros, {x = x, y = y, r = r, a = a})
         self.clock = 0
     end 
 end 
@@ -33,7 +35,7 @@ function Asteroids:hit_check(bulletList)
     if astros ~= {} and bullets ~= {} then 
         for i, b in ipairs(bulletList) do 
             for j, a in ipairs(self.astros) do 
-                if math.sqrt(math.pow(b.x - a.x) + math.pow(b.y - a.y)) < b.r + a.r then 
+                if math.sqrt(math.pow(b.x - a.x, 2) + math.pow(b.y - a.y, 2)) < b.r + a.r then 
                     table.remove(astros, j)
                     table.remove(bullets, i)
                 end 
@@ -43,6 +45,21 @@ function Asteroids:hit_check(bulletList)
     self.astros = astros
     return bullets
 end 
+
+function Asteroids:update(dt)
+    if self.astros ~= {} then 
+        for k, v in ipairs(self.astros) do 
+            self.astros[k].x = v.x + math.cos(math.rad(v.a)) * v.r * self.vel * dt 
+            self.astros[k].y = v.y + math.sin(math.rad(v.a)) * v.r * self.vel * dt 
+            if self.astros[k].x < 0 or self.astros[k].x > love.graphics.getWidth() then 
+                table.remove(self.astros, k)
+            elseif self.astros[k].y < 0 or self.astros[k].y > love.graphics.getHeight() then 
+                table.remove(self.astros, k)
+            end 
+        end 
+    end
+end 
+
 function Asteroids:draw()
     for k, v in ipairs(self.astros) do 
         love.graphics.circle('fill', v.x, v.y, v.r)

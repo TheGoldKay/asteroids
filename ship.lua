@@ -35,16 +35,15 @@ end
 
 function Ship:rotate(dt)
     -- player rotation
-    if self.dir == 'l' then 
+    if love.keyboard.isDown('left') then 
         self.a[1] = self.a[1] - self.up * dt
         self.a[2] = self.a[2] - self.up * dt
         self.a[3] = self.a[3] - self.up * dt 
-    elseif self.dir == 'r' then 
+        self.p = make_points(self.x, self.y, self.r, self.a)
+    elseif love.keyboard.isDown('right') then 
         self.a[1] = self.a[1] + self.up * dt
         self.a[2] = self.a[2] + self.up * dt
         self.a[3] = self.a[3] + self.up * dt 
-    end 
-    if self.dir == 'l' or self.dir == 'r' then 
         self.p = make_points(self.x, self.y, self.r, self.a)
     end 
 end 
