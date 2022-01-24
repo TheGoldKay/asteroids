@@ -42,18 +42,6 @@ function Asteroids:create(dt, shipX, shipY)
     end 
 end 
 
-function Asteroids:divide(astros, i)
-    local part = 1;
-    while astros[i].r / part > self.r_min*4 do 
-        part = part + 1 
-    end 
-    for i = 1, part, 1 do 
-        local a = math.random(0, 360)
-        table.insert(astros, {x = astros[i].x, y = astros[i].y, r = astros[i].r/i, a = a})
-    end 
-    return astros 
-end 
-
 function Asteroids:hit_check(bulletList)
     local astros = self.astros
     local bullets = bulletList 
@@ -61,7 +49,10 @@ function Asteroids:hit_check(bulletList)
         for i, b in ipairs(bulletList) do 
             for j, a in ipairs(self.astros) do 
                 if math.sqrt(math.pow(b.x - a.x, 2) + math.pow(b.y - a.y, 2)) < b.r + a.r then 
-                    astros = self:divide(astros, j)
+                    if a.r/2 > self.r_min * 2 then 
+                        table.insert(astros, {x = a.x, y = a.y, r = a.r/2, a = math.random(0, 360)})
+                        table.insert(astros, {x = a.x, y = a.y, r = a.r/2, a = math.random(0, 360)})
+                    end 
                     table.remove(astros, j)
                     table.remove(bullets, i)
                     break
@@ -78,10 +69,16 @@ function Asteroids:update(dt)
         for k, v in ipairs(self.astros) do 
             self.astros[k].x = v.x + math.cos(math.rad(v.a)) * v.r * self.vel * dt 
             self.astros[k].y = v.y + math.sin(math.rad(v.a)) * v.r * self.vel * dt 
-            if self.astros[k].x < 0 or self.astros[k].x > love.graphics.getWidth() then 
-                table.remove(self.astros, k)
-            elseif self.astros[k].y < 0 or self.astros[k].y > love.graphics.getHeight() then 
-                table.remove(self.astros, k)
+            local astro = self.astros[k]
+            if self.astros[k].x < 0 then 
+                self.astros[k].x = love.graphics.getWidth()
+            elseif self.astros[k].x > love.graphics.getWidth() then 
+                self.astros[k].x = 0
+            end 
+            if self.astros[k].y < 0 then 
+                self.astros[k].y = love.graphics.getHeight()
+            elseif self.astros[k].y > love.graphics.getHeight() then 
+                self.astros[k].y = 0
             end 
         end 
     end
