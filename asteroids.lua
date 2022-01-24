@@ -1,6 +1,6 @@
 local Asteroids = {}
 
-function Asteroids:new()
+function Asteroids:new(ship_radius)
     local o = {}
     setmetatable(o, self)
     self.__index = self 
@@ -14,17 +14,29 @@ function Asteroids:new()
     -- wait 'timer' seconds to create new asteroids
     self.clock = 0
     self.timer = 1
+    -- set min distance from shitp when created
+    self.s_radius = ship_radius
+    self.min_dist = 10
     return o 
 end 
 
-function Asteroids:create(dt)
-    self.clock = self.clock + dt 
-    if self.clock > self.timer then 
+function Asteroids:make_astro(sx, sy)
+    while true do 
         local x = math.random(self.x_min, love.graphics.getWidth())
         local y = math.random(self.y_min, love.graphics.getHeight())
         local r = math.random(self.r_min, self.r_max)
         local a = math.random(0, 360)
-        table.insert(self.astros, {x = x, y = y, r = r, a = a})
+        if math.sqrt(math.pow(sx - x, 2) + math.pow(sy - y, 2)) - self.s_radius - r > self.min_dist then 
+            return {x = x, y = y, r = r, a = a}
+        end 
+    end 
+end 
+
+function Asteroids:create(dt, shipX, shipY)
+    self.clock = self.clock + dt 
+    if self.clock > self.timer then 
+        local astro = self:make_astro(shipX, shipY)
+        table.insert(self.astros, astro)
         self.clock = 0
     end 
 end 
