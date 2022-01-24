@@ -9,7 +9,7 @@ function love.load()
     love.window.setMode(screen_width, screen_height, {x = 600, y = 300})
     ship = Ship:new(screen_width/2, screen_height/2, ship_radius)
     bullets = Bullets:new(100, 10)
-    astros = Asteroids:new(ship_radius*5)
+    astros = Asteroids:new(ship_radius)
 end 
 
 function love.draw()
@@ -32,6 +32,6 @@ function love.update(dt)
     ship:update(dt)
     bullets:update(dt)
     astros:create(dt, ship.x, ship.y)
-    --astros:update(dt)
+    astros:update(dt)
     bullets.list = astros:hit_check(bullets.list)
 end

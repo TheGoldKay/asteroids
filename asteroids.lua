@@ -16,17 +16,18 @@ function Asteroids:new(ship_radius)
     self.timer = 1
     -- set min distance from shitp when created
     self.s_radius = ship_radius
-    self.min_dist = 10
+    self.min_dist = 50
     return o 
 end 
 
 function Asteroids:make_astro(sx, sy)
+    local inc = 600
     while true do 
-        local x = math.random(self.x_min, love.graphics.getWidth())
+        local x = math.random(self.x_min+inc, love.graphics.getWidth()-inc)
         local y = math.random(self.y_min, love.graphics.getHeight())
         local r = math.random(self.r_min, self.r_max)
         local a = math.random(0, 360)
-        if math.sqrt(math.pow(sx - x, 2) + math.pow(sy - y, 2)) - self.s_radius - r > self.min_dist then 
+        if math.sqrt(math.pow(sx - x, 2) + math.pow(sy - y, 2)) > self.s_radius + r + self.min_dist then 
             return {x = x, y = y, r = r, a = a}
         end 
     end 
@@ -41,6 +42,18 @@ function Asteroids:create(dt, shipX, shipY)
     end 
 end 
 
+function Asteroids:divide(astros, i)
+    local part = 1;
+    while astros[i].r / part > self.r_min*4 do 
+        part = part + 1 
+    end 
+    for i = 1, part, 1 do 
+        local a = math.random(0, 360)
+        table.insert(astros, {x = astros[i].x, y = astros[i].y, r = astros[i].r/i, a = a})
+    end 
+    return astros 
+end 
+
 function Asteroids:hit_check(bulletList)
     local astros = self.astros
     local bullets = bulletList 
@@ -48,8 +61,10 @@ function Asteroids:hit_check(bulletList)
         for i, b in ipairs(bulletList) do 
             for j, a in ipairs(self.astros) do 
                 if math.sqrt(math.pow(b.x - a.x, 2) + math.pow(b.y - a.y, 2)) < b.r + a.r then 
+                    astros = self:divide(astros, j)
                     table.remove(astros, j)
                     table.remove(bullets, i)
+                    break
                 end 
             end 
         end 
